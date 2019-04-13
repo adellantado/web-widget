@@ -1,6 +1,7 @@
 import {h, render} from 'preact';
 import Widget from './widget';
 import {defaultConfiguration} from './configuration';
+import {IConfiguration} from "../typings";
 
 if (window.attachEvent) {
     window.attachEvent('onload', injectChat);
@@ -14,6 +15,15 @@ function getUrlParameter(name: string, defaults = '') {
     let results = regex.exec(document.getElementById('botmanWidget').getAttribute('src'));
     return results === null ? defaults : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
+
+function getUserId(conf: IConfiguration) {
+    return conf.userId || generateRandomId();
+}
+
+function generateRandomId() {
+    return Math.random().toString(36).substr(2, 6);
+}
+
 function injectChat() {
     let root = document.createElement('div');
     root.id = 'botmanWidgetRoot';
@@ -24,7 +34,13 @@ function injectChat() {
         settings = JSON.parse(getUrlParameter('settings', '{}'));
     } catch (e) { }
 
-    const dynamicConf = window.botmanWidget || {}; // these configuration are loaded when the chat frame is opened
+    const dynamicConf = window.botmanWidget || {} as IConfiguration; // these configuration are loaded when the chat frame is opened
+
+    dynamicConf.userId = getUserId({...defaultConfiguration, ...dynamicConf});
+
+    if (typeof dynamicConf.echoChannel === 'function') {
+        dynamicConf.echoChannel = dynamicConf.echoChannel(dynamicConf.userId);
+    }
 
     const conf = {...defaultConfiguration, ...settings, ...dynamicConf};
 
@@ -42,5 +58,5 @@ function injectChat() {
 }
 
 declare global {
-    interface Window { attachEvent: Function, botmanWidget: Widget }
+    interface Window { attachEvent: Function, botmanWidget: IConfiguration }
 }

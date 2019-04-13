@@ -121,4 +121,16 @@ export interface IConfiguration {
     userId: string,
     wrapperHeight?: number,
     alwaysUseFloatingButton: boolean,
+
+    useEcho: boolean,
+
+    echoChannel: string | any,
+
+    echoChannelType: string,
+
+    echoConfiguration: any,
+
+    echoEventName: string,
+
+    init?: Function
 }
