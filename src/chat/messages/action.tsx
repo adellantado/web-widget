@@ -9,9 +9,7 @@ export default class Action extends MessageType {
         const message = props.message;
 
         const buttons = message.actions.map((action: IAction) => {
-            return <div class="btn" onClick={() => this.performAction(action)}>
-                {action.text}
-            </div>;
+            return <div class="btn-quick" onClick={() => this.performAction(action)}>{action.text}</div>;
         });
 
         return (
@@ -33,6 +31,7 @@ export default class Action extends MessageType {
                 type: msg.type,
                 timeout: msg.timeout,
                 actions: msg.actions,
+                buttons: msg.buttons,
                 attachment: msg.attachment,
                 additionalParameters: msg.additionalParameters,
                 from: 'chatbot'

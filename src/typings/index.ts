@@ -121,6 +121,7 @@ export interface IConfiguration {
     userId: string,
     wrapperHeight?: number,
     alwaysUseFloatingButton: boolean,
+    disableFloatingButton: boolean,
 
     useEcho: boolean,
 

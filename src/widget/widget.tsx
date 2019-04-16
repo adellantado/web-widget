@@ -10,7 +10,8 @@ import {
     desktopWrapperStyle,
     mobileOpenWrapperStyle,
     mobileClosedWrapperStyle,
-    desktopClosedWrapperStyleChat
+    desktopClosedWrapperStyleChat,
+    disabledWrapperStyle
 } from './style';
 import {IConfiguration, IMessage} from '../typings';
 import Echo from "laravel-echo";
@@ -67,15 +68,15 @@ export default class Widget extends Component<any, IWidgetState> {
         let wrapperStyle;
 
         if (!isChatOpen && (isMobile || conf.alwaysUseFloatingButton)) {
-            wrapperStyle = { ...mobileClosedWrapperStyle}; // closed mobile floating button
+            wrapperStyle = conf.disableFloatingButton ? { ...disabledWrapperStyle} : { ...mobileClosedWrapperStyle}; // closed mobile floating button
         } else if (!isMobile){
             wrapperStyle = (isChatOpen || this.state.wasChatOpened) ?
                 (isChatOpen) ?
                     { ...desktopWrapperStyle, ...wrapperWidth} // desktop mode, button style
                     :
-                    { ...desktopClosedWrapperStyleChat}
+                    conf.disableFloatingButton ? { ...disabledWrapperStyle} : { ...desktopClosedWrapperStyleChat}
                 :
-                { ...desktopClosedWrapperStyleChat}; // desktop mode, chat style
+                conf.disableFloatingButton ? { ...disabledWrapperStyle} : { ...desktopClosedWrapperStyleChat}; // desktop mode, chat style
         } else {
             wrapperStyle = mobileOpenWrapperStyle; // open mobile wrapper should have no border
         }
@@ -88,7 +89,7 @@ export default class Widget extends Component<any, IWidgetState> {
                 {/* Open/close button */}
                 {(isMobile || conf.alwaysUseFloatingButton) && !isChatOpen ?
 
-                    <ChatFloatingButton onClick={this.toggle} conf={conf}/>
+                    (conf.disableFloatingButton ? null : <ChatFloatingButton onClick={this.toggle} conf={conf}/>)
 
                     :
 
@@ -97,14 +98,14 @@ export default class Widget extends Component<any, IWidgetState> {
                             <div style={{background: conf.mainColor, ...desktopTitleStyle}} onClick={this.toggle}>
                                 <div style={{
                                     display: 'flex', alignItems: 'center', padding: '0px 30px 0px 0px',
-                                    fontSize: '15px', fontWeight: 'normal', color: conf.headerTextColor
+                                    fontSize: '20px', fontWeight: 'normal', color: conf.headerTextColor
                                 }}>
                                     {conf.title}
                                 </div>
                                 <ArrowIcon isOpened={isChatOpen}/>
-                            </div> : <ChatTitleMsg onClick={this.toggle} conf={conf}/>)
+                            </div> : (conf.disableFloatingButton ? null : <ChatTitleMsg onClick={this.toggle} conf={conf}/>))
                         :
-                        <ChatTitleMsg onClick={this.toggle} conf={conf}/>
+                        (conf.disableFloatingButton ? null : <ChatTitleMsg onClick={this.toggle} conf={conf}/>)
                 }
 
                 {/*Chat IFrame*/}
@@ -156,6 +157,7 @@ export default class Widget extends Component<any, IWidgetState> {
         data.append('driver', 'web');
         data.append('eventName', 'widgetOpened');
         data.append('eventData', this.props.conf.widgetOpenedEventData);
+        data.append('userId', this.props.conf.userId);
 
         axios.post(this.props.conf.chatServer, data).then(response => {
             const messages = response.data.messages || [];

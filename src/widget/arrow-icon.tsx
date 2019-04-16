@@ -12,7 +12,7 @@ export default class ArrowIcon extends Component<IArrowIconProps, any> {
                         marginTop: 6,
                         verticalAlign: 'middle'
                     }}
-                    fill="#FFFFFF" height="15" viewBox="0 0 15 15" width="15"
+                    fill="#FFFFFF" height="20" viewBox="0 0 15 15" width="20"
                     xmlns="http://www.w3.org/2000/svg">
                         <line x1="1" y1="15"
                             x2="15" y2="1"

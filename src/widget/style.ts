@@ -32,6 +32,15 @@ export const mobileClosedWrapperStyle = {
     minHeight: '120px'
 };
 
+export const disabledWrapperStyle = {
+    position: 'fixed',
+    bottom: '0px',
+    right: '0px',
+    zIndex: 2147483647,
+    boxSizing: 'content-box',
+    overflow: 'hidden'
+};
+
 export const mobileOpenWrapperStyle = {
     position: 'fixed',
     top: 0,

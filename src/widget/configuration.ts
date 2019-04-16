@@ -26,6 +26,7 @@ export const defaultConfiguration: IConfiguration = {
     chatId: '',
     userId: '',
     alwaysUseFloatingButton: false,
+    disableFloatingButton: false,
     useEcho: false,
     echoChannel: (userId: string) => '',
     echoConfiguration: {},
